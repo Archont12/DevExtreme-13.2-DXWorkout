@@ -28,22 +28,22 @@
 
                         <div class="dx-field">
                             <div class="dx-field-label">Exercise <span data-bind="text: ($index() + 1)"></span></div>
-                            <div class="dx-field-value" data-bind="dxLookup: { title: 'Select exercise', dataSource: exercisesTypes, placeholder: name() || 'select...', value: name }"></div>
+                            <div class="dx-field-value wo-exercise" data-bind="dxLookup: { title: 'Select exercise', dataSource: exercisesTypes, placeholder: name() || 'select...', value: name, activeStateEnabled: false }"></div>
                         </div>
                             
                         
                         <div class="dx-field">
                             <div class="dx-field-label">Equipment</div>
-                            <div class="dx-field-value" data-bind="dxLookup: { title: 'Select equipment', dataSource: equipmentTypes, placeholder: equipment() || 'select...', value: equipment }"></div>
+                            <div class="dx-field-value wo-equipment" data-bind="dxLookup: { title: 'Select equipment', dataSource: equipmentTypes, placeholder: equipment() || 'select...', value: equipment, activeStateEnabled: false }"></div>
                         </div>
                         
                         <div class="dx-field">
                             <!-- ko foreach: sets -->
                             <div>
                                 <div class="set-item">
-                                    <div data-bind="dxNumberbox: { value: reps, min: 1, placeholder: 'Reps' } "></div>
+                                    <div data-bind="dxNumberBox: { value: reps, min: 1, placeholder: 'Reps' } "></div>
                                     <span>&times;</span>
-                                    <div data-bind="dxNumberbox: { value: weight, min: 1, placeholder: 'Weight' } "></div>
+                                    <div data-bind="dxNumberBox: { value: weight, min: 1, placeholder: 'Weight' } "></div>
                                     <span data-bind="text: weightUnit"></span>
                                 </div>
 
@@ -66,7 +66,7 @@
                       <div class="dx-field">
                         <div class="dx-field-label">Rest Interval</div>
                         <div class="dx-field-value rest-value">
-                            <div data-bind="dxNumberbox: { value: restInterval, min: 0 }"></div>
+                            <div data-bind="dxNumberBox: { value: restInterval, min: 0 }"></div>
                             sec
                         </div>
                       </div>

@@ -6,17 +6,17 @@
         <div class="dx-fieldset">         
             <div class="dx-field">
                 <div class="dx-field-label">Date</div>
-                <div class="dx-field-value" data-bind="dxDatebox: { value: workout.date, format: 'date' }"></div>
+                <div class="dx-field-value" data-bind="dxDateBox: { value: workout.date, format: 'date' }"></div>
             </div>
 
             <div class="dx-field">
                 <div class="dx-field-label">Time</div>
-                <div class="dx-field-value" data-bind="dxDatebox: { value: workout.date, format: 'time' }"></div>
+                <div class="dx-field-value" data-bind="dxDateBox: { value: workout.date, format: 'time' }"></div>
             </div>
 
             <div class="dx-field">
                 <div class="dx-field-label">Goal</div>
-                <div class="dx-field-value" data-bind="dxLookup: { title: 'Select goal', placeholder: workout.goal() || 'select...', value: workout.goal }"></div>
+                <div class="dx-field-value" data-bind="dxLookup: { title: 'Select goal', placeholder: workout.goal() || 'select...', value: workout.goal, activeStateEnabled: false }"></div>
             </div>
 
             <div class="dx-field">

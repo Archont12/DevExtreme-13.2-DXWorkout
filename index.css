@@ -313,15 +313,6 @@ select {
 
 /* win8 */
 
-@media screen and (orientation: portrait) {
-    @-ms-viewport {
-        width: 320px;
-        user-zoom: fixed;
-        max-zoom: 1;
-        min-zoom: 1;
-    }
-}
-
 .dx-theme-win8 .dx-content {
     position: absolute;
     height: 100%;

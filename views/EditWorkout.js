@@ -76,12 +76,12 @@ DXWorkout.EditWorkout = function(params) {
             });
         },
 
-        viewShown: function() {
-            $(".dx-viewport .dx-lookup.wo-exercise").each(function() {
+        viewShown: function () {
+            $(".dx-viewport .dx-lookup.wo-exercise").each(function () {
                 $(this).data("dxLookup").option("dataSource", DXWorkout.settings["exercise"]);
             });
 
-            $(".dx-viewport .dx-lookup.wo-equipment").each(function() {
+            $(".dx-viewport .dx-lookup.wo-equipment").each(function () {
                 $(this).data("dxLookup").option("dataSource", DXWorkout.settings["equipment"]);
             });
         }
