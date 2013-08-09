@@ -1,140 +1,193 @@
 ﻿"use strict";
 
 DXWorkout.createWorkoutViewModel = function() {
-    var id = ko.observable(),
-        title,
-        started = ko.observable(),
-        date = ko.observable(),
+    var wo = DXWorkout,
+        id = ko.observable(),
+        caption,
+        duration,
+        currentExercise,
+        startDate = ko.observable(),
+        endDate = ko.observable(),
         goal = ko.observable(),
         notes = ko.observable(),
-        exerciseGroups = ko.observableArray();
+        exercises = ko.observableArray();
 
-    function clear() {
-        fromJS({
-            id: null,
-            started: false,
-            date: new Date,
-            goal: "",
-            notes: "",
-            exerciseGroups: [{
-                restInterval: 60,
-                exercises: [{
-                    sets: [{
-                    }]
-                }]
-            }]
-        });
-    }
-
-    function exerciseGroupViewModelFromData(data) {
-        var vm = DXWorkout.createExerciseGroupViewModel(exerciseGroups);
+    function exerciseViewModelFromData(data) {
+        var vm = wo.createExerciseViewModel(exercises);
         vm.fromJS(data);
         return vm;
     }
 
     function fromJS(data) {
         id(data.id);
-        date(new Date(data.date));
+        startDate(new Date(data.startDate));
+        endDate(data.endDate ? new Date(data.endDate) : null);
         goal(data.goal);
         notes(data.notes);
-        started(data.started);
-        exerciseGroups($.map(data.exerciseGroups, exerciseGroupViewModelFromData));
+        exercises($.map(data.exercises, exerciseViewModelFromData));
     }
 
     function toJS() {
         return {
             id: id(),
-            started: started(),
-            date: date(),
+            startDate: startDate(),
+            endDate: endDate(),
             goal: goal(),
             notes: notes(),
-            title: title(),
-            exerciseGroups: $.map(exerciseGroups(), function(item) { return item.toJS(); })
+            caption: formatCaption(),
+            exercises: $.map(exercises(), function(item) { return item.toJS(); })
         }
     }
 
-    function handleDone(e) {
-        save();
-        DXWorkout.removeCurrentWorkout();
-        DXWorkout.app.navigate("Log", { root: true });
+    function handleShowResults() {
+        endDate(new Date);
+        wo.app.navigate("Results");
     }
- 
+
+    function handleDelete() {
+        var currentId = id();
+        wo.removeCurrentWorkout();
+        wo.deleteWorkout(currentId);
+        wo.app.navigate("Log", { direction: 'forward', root: true });
+    }
+
+    function handleContinue() {
+        wo.app.navigate("Exercise/add", { direction: 'backward' });
+    }
+
+    function handleFinish() {
+        save();
+        wo.removeCurrentWorkout();
+        wo.app.navigate("Log", { direction: 'forward', root: true });
+    }
+
+    function handleAddExercise() {
+        var newExercise = wo.createExerciseViewModel();
+        newExercise.fromJS({
+            sets: [{ weight: 50, reps: 10 }]
+        });
+        newExercise.exerciseNumber = exercises().length + 1;
+        exercises.push(newExercise);
+
+        wo.app.navigate("List/select/exercise", { direction: 'forward' });
+    }
+
+    function handleAddSet() {
+        var exercise = currentExercise(),
+            unwrappedSets = exercise.sets(),
+            lastSet = unwrappedSets[unwrappedSets.length - 1],
+            clonedSet = DXWorkout.createSetViewModel(exercise.sets),
+            clonedData = $.extend({}, lastSet.toJS());
+
+        clonedSet.fromJS(clonedData);
+        exercise.sets.push(clonedSet);
+    }
+
+    function handleNotesChange() {
+        if(id())
+            save();
+    }
 
     function save() {
         var data = toJS();
 
-        if (typeof (data.date) == "object") {
-            data.date = data.date.toJSON();
+        if (typeof (data.startDate) == "object") {
+            data.startDate = data.startDate.toJSON();
         }
+
+        if (typeof (data.endDate) == "object") {
+            data.endDate = data.endDate.toJSON();
+        }       
         
         if(!data.id) {
-            data.id = DXWorkout.currentId;
-            id(DXWorkout.currentId);
-            DXWorkout.insertWorkout(data);
+            var newId = (new DevExpress.data.Guid).toString();
+            data.id = newId;
+            wo.insertWorkout(data);
         } else {
-            DXWorkout.updateWorkout(data.id, data);
+            wo.updateWorkout(data.id, data);
         }
-        
     }
 
-    function handlePostpone(e) {
-        started(false);
-        DXWorkout.saveCurrentWorkout();
-        DXWorkout.app.navigate("CreateWorkout/" + DXWorkout.currentId);
+    function clear() {
+        fromJS({
+            id: null,
+            startDate: new Date,
+            endDate: null,
+            goal: "",
+            notes: "",
+            exercises: [],
+            currentExercise: null
+        });
     }
 
-    function handleStart(e) {
-        started(true);
-        DXWorkout.saveCurrentWorkout();
-        DXWorkout.app.navigate("EditWorkout/" + DXWorkout.currentId);
+    function clearCurrentExercise() {
+        var exercise = currentExercise();
+        exercise.fromJS({
+            sets: [{ weight: 50, reps: 10 }]
+        });       
     }
 
-    function isEmpty() {
-        return !id() && !started() && !goal() && !notes();
+    function cancelCurrentWorkout() {
+        wo.removeCurrentWorkout();
+        wo.app.navigate("Home");
     }
 
-    function handleCancel(e) {
-        if(!isEmpty()) {
-            if(!confirm("Are you sure you want to cancel this workout?"))
-                return;
-            if(id())
-                DXWorkout.deleteWorkout(id());
-        }
-        DXWorkout.removeCurrentWorkout();
-        DXWorkout.app.navigate("Log", { root: true });
-    }
-       
-    title = ko.computed(function() {
-        var format = "MMM d, yyyy",
-            bag = [Globalize.format(date(), format)];
+    function formatCaption() {
+        var bag = [Globalize.format(startDate(), "MMM d, yyyy")];
 
         if(goal())
             bag.push("-", goal());
 
+        if(duration)
+            bag.push("(" + duration() + ")");
+
         return bag.join(" ");
+    }
+
+    duration = ko.computed(function() {
+        if(startDate() instanceof Date && endDate() instanceof Date) {
+            return wo.formatTime((endDate() - startDate()) / 60000);
+        }
+        return "n/a";
+    });
+
+    currentExercise = ko.computed(function() {
+        var exercisesArray = exercises(),
+            count = exercisesArray.length;
+        return count
+            ? exercisesArray[count - 1]
+            : null;
     });
 
     return {
-        currentNavigationItemId: "currentWorkout",
+        goalList: wo.settings['goal'],
+        weightUnit: DXWorkout.settings["weightUnit"],
 
         id: id,
-        title: title,
+        duration: duration,
         goal: goal,
-        date: date,
+        startDate: startDate,
+        endDate: endDate,
         notes: notes,
-        exerciseGroups: exerciseGroups,
-        started: started,
+        exercises: exercises,
+        currentExercise: currentExercise,
+
+        handleAddSet: handleAddSet,
+        handleAddExercise: handleAddExercise,
+        handleShowResults: handleShowResults,
+
+        handleContinue: handleContinue,
+        handleFinish: handleFinish,
+        handleDelete: handleDelete,
+
+        handleNotesChange: handleNotesChange,
 
         save: save,
-        handleDone: handleDone,
-        handleStart: handleStart,
-        handleCancel: handleCancel,
-        handlePostpone: handlePostpone,
-        isEmpty: isEmpty,
+        clear: clear,
+        clearCurrentExercise: clearCurrentExercise,
+        cancelCurrentWorkout: cancelCurrentWorkout,
 
         toJS: toJS,
-        fromJS: fromJS,
-
-        clear: clear
+        fromJS: fromJS
     };
 };

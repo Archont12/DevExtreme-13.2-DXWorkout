@@ -1,15 +1,10 @@
 ﻿"use strict";
 
 DXWorkout.GoalGraphs = function(params) {
-    var monthAgo,       
-        goalsChartOptions,
+    var goalsChartOptions,
         tabOptions,
         selectedTab = ko.observable(0),
-
         isGoalsDataLoaded = ko.observable(false);
-
-    monthAgo = new Date();
-    monthAgo.setMonth(monthAgo.getMonth() - 1);
 
     goalsChartOptions = {
         series: {
@@ -25,8 +20,11 @@ DXWorkout.GoalGraphs = function(params) {
         },
         legend: {
             horizontalAlignment: 'center',
-            verticalAlignment: 'bottom'
+            verticalAlignment: 'bottom',
+            columnCount: 3,
+            rowCount: 2
         },
+        palette: 'Soft Pastel',
         dataSource: ko.observableArray([])
     };
 
@@ -71,6 +69,8 @@ DXWorkout.GoalGraphs = function(params) {
     };
 
     return {
+        currentNavigationItemId: "Graphs",
+
         goalsChartOptions: goalsChartOptions,
 
         isGoalsDataLoaded: isGoalsDataLoaded,
@@ -88,9 +88,6 @@ DXWorkout.GoalGraphs = function(params) {
                 result = [ ];
 
             $.each(workouts, function() {
-                if (monthAgo.getTime() > new Date(this.date).getTime())
-                    return;
-
                 if (!grouped[this.goal])
                     grouped[this.goal] = [];
                 grouped[this.goal].push(this);

@@ -1,8 +1,11 @@
 "use strict";
 
 !function($, DX, wo, undefined) {
-    var CURRENT_KEY = "dxworkout-current-workout",
+    var DATA_VERSION_KEY = "dxworkout-version",
         WORKOUTS_KEY = "dxworkout-workouts",
+        CURRENT_KEY = "dxworkout-current",
+        DATA_VERSION = "3",
+        OBSERVABLE_SETTINGS = ["lengthUnit", "weightUnit"],
         workoutArray;
 
     function insertWorkout(workout) {
@@ -33,58 +36,60 @@
         localStorage.setItem(WORKOUTS_KEY, JSON.stringify(workoutArray()));
     }
 
-    function initCurrentWorkout() {
-        var current = wo.createWorkoutViewModel(),
-            savedData = localStorage.getItem(CURRENT_KEY);
-        if (savedData)
-            current.fromJS(JSON.parse(savedData));
-        else
-            current.clear();
-
-        wo.currentWorkout = current;
-        wo.currentId = current.id() || (new DevExpress.data.Guid).toString();
-    }
-
-    function setCurrentWorkoutById(id) {
-        var workout = wo.currentWorkout,
-            currentId = wo.currentId;
-
-        if (id != currentId) {
-            var index,
-                foundItem,
-                array = workoutArray();
-            for (index = 0; index < array.length; index++) {
-                if (array[index].id === id) {
-                    foundItem = array[index];
-                    break;
-                }
+    function getWorkoutById(id) {
+        var workout,
+            index,
+            foundItem,
+            array = workoutArray();
+        for (index = 0; index < array.length; index++) {
+            if (array[index].id === id) {
+                foundItem = array[index];
+                break;
             }
-
-            workout = wo.createWorkoutViewModel();
-            if (foundItem)
-                workout.fromJS(foundItem);
-            else
-                workout.clear();
-            wo.currentWorkout = workout;
-            wo.currentId = id;
-        } else if (!workout) {
-            workout = wo.createWorkoutViewModel();
-            workout.clear();
-            wo.currentWorkout = workout;
         }
+
+        workout = wo.createWorkoutViewModel();
+        if (foundItem)
+            workout.fromJS(foundItem);
+        else
+            workout.clear();
         return workout;
     }
 
-    function saveCurrentWorkout() {
-        var data = JSON.stringify(wo.currentWorkout.toJS());
-        localStorage.setItem(CURRENT_KEY, data);
+    function removeCurrentWorkout() {
+        wo.currentWorkout = null;
+        localStorage.removeItem(CURRENT_KEY);
     }
 
-    function removeCurrentWorkout() {
-        localStorage.removeItem(CURRENT_KEY);
+    function saveCurrentWorkout() {
+        if(wo.currentWorkout)
+            localStorage.setItem(CURRENT_KEY, JSON.stringify(wo.currentWorkout.toJS()));
+    }
 
-        wo.currentWorkout = null;
-        wo.currentId = (new DevExpress.data.Guid).toString();
+    function getCurrentFromStorage() {
+        var storageData = localStorage.getItem(CURRENT_KEY),
+            workout,
+            MAX_WORKOUT_DURATION_HOURS = 2;
+
+        if(storageData)
+            workout = JSON.parse(storageData);
+
+        if(!workout)
+            return null;
+
+        var startDate = new Date(workout.startDate),
+            currentDate = new Date();
+        if(startDate.setHours(startDate.getHours() + MAX_WORKOUT_DURATION_HOURS) < currentDate)
+            return null;
+
+        workout.endDate = currentDate;
+        return workout;
+    }
+
+    function isObservableSetting(settingName) {
+        if ($.inArray(settingName, OBSERVABLE_SETTINGS) >= 0)
+            return true;
+        return false;
     }
 
     function initSetting(key) {
@@ -95,40 +100,36 @@
         } else {
            currentSettings = wo.defaultSettings[key]; 
         }
-        wo.settings[key] = currentSettings;
+        
+        wo.settings[key] = isObservableSetting(key) ? ko.observable(currentSettings) : currentSettings;
     }
 
     function saveSetting(key, value) {
-        wo.settings[key] = value;
+        if(!isObservableSetting(key))
+            wo.settings[key] = value; 
         localStorage.setItem("dxworkout-settings-" + key, JSON.stringify(value));
     }
 
     function initUserData() {
-        var result = $.Deferred();
-
+        if(localStorage.getItem(DATA_VERSION_KEY) !== DATA_VERSION) {
+            clearUserData();
+            localStorage.setItem(DATA_VERSION_KEY, DATA_VERSION);
+        }
         initSetting("goal");
         initSetting("exercise");
-        initSetting("equipment");
         initSetting("lengthUnit");
         initSetting("weightUnit");
-        initCurrentWorkout();
 
         var storageData = localStorage.getItem(WORKOUTS_KEY);
-        var data = storageData ? JSON.parse(storageData) : [];
-        var state = data.length > 0
-                ? wo.initStates.NORMAL
-                : wo.initStates.EMPTY;
-
+        var data = storageData ? JSON.parse(storageData) : wo.sampleData;
         workoutArray = wo.workouts = ko.observableArray(data);
-        return result.resolve(state).promise();
     }
 
     function clearUserData() {
         var localStorageKeys = [
-            CURRENT_KEY,
             WORKOUTS_KEY,
+            DATA_VERSION,
             "dxworkout-settings-exercise",
-            "dxworkout-settings-equipment",
             "dxworkout-settings-lengthUnit",
             "dxworkout-settings-weightUnit"
         ];
@@ -148,10 +149,10 @@
         initUserData: initUserData,
         clearUserData: clearUserData,
 
-        initCurrentWorkout: initCurrentWorkout,
-        setCurrentWorkoutById: setCurrentWorkoutById,
-        saveCurrentWorkout: saveCurrentWorkout,
+        getWorkoutById: getWorkoutById,
         removeCurrentWorkout: removeCurrentWorkout,
+        saveCurrentWorkout: saveCurrentWorkout,
+        getCurrentFromStorage: getCurrentFromStorage,
         
         saveSettings: saveSetting,
         settings: {}

@@ -5,19 +5,15 @@ DXWorkout.Settings = function(params) {
         lengthUnits: ["miles", "km"],
         weightUnits: ["lbs", "kg"],
 
-        length: ko.observable(DXWorkout.settings["lengthUnit"]),
-        weight: ko.observable(DXWorkout.settings["weightUnit"]),
+        length: DXWorkout.settings["lengthUnit"],
+        weight: DXWorkout.settings["weightUnit"],
 
         editGoals: function() {
-            DXWorkout.app.navigate('EditList/goal');
+            DXWorkout.app.navigate('List/edit/goal');
         },
 
         editExercises: function() {
-            DXWorkout.app.navigate('EditList/exercise');
-        },
-
-        editEquipment: function() {
-            DXWorkout.app.navigate('EditList/equipment');
+            DXWorkout.app.navigate('List/edit/exercise');
         }
     };
 

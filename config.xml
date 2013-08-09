@@ -3,20 +3,20 @@
     xmlns="http://www.w3.org/ns/widgets"
     xmlns:gap="http://phonegap.com/ns/1.0"
     id="com.devexpress.dxworkoutinternal"
-    versionCode="1"
-    version="0.0.1">
+    versionCode="100"
+    version="0.1.0.0">
    
     <name>DXWorkout</name>
 
     <description>
-        App to track daily workouts and plan workouts over time
+        Simple app to track your daily workouts
     </description>
 
     <author href="http://www.devexpress.com">
         Developer Express Inc.
     </author>
 
-    <preference name="phonegap-version" value="2.3.0" />
+    <preference name="phonegap-version" value="2.9.0" />
     <preference name="orientation" value="portrait" />
     <preference name="target-device" value="handset" />
     <preference name="auto-hide-splash-screen" value="false" />

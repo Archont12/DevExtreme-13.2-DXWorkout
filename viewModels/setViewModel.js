@@ -16,23 +16,6 @@ DXWorkout.createSetViewModel = function(allSets) {
         };
     }
 
-    function getLastSet() {
-        var unwrappedSets = allSets();
-        return unwrappedSets[unwrappedSets.length - 1];
-    }
-
-    function canCopy() {
-        return this === getLastSet();
-    }        
-
-    function handleCopy() {
-        var clonedSet = DXWorkout.createSetViewModel(allSets),
-            clonedData = $.extend({ }, getLastSet().toJS());
-
-        clonedSet.fromJS(clonedData);
-        allSets.push(clonedSet);
-    }
-
     function canDelete() {
         return allSets().length > 1;
     }
@@ -46,18 +29,16 @@ DXWorkout.createSetViewModel = function(allSets) {
             throw Error("number of sets must be greater than zero");
 
         allSets.splice(index, 1);
-    }        
+    }
 
 
     return {
         weight: weight,
         reps: reps,
-        weightUnit: ko.observable(DXWorkout.settings["weightUnit"]),
+        weightUnit: DXWorkout.settings["weightUnit"],
 
         handleDelete: handleDelete,
-        handleCopy: handleCopy,
         canDelete: canDelete,
-        canCopy: canCopy,
 
         toJS: toJS,
         fromJS: fromJS

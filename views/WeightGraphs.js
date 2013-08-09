@@ -1,63 +1,30 @@
 "use strict";
 
 DXWorkout.WeightGraphs = function(params) {
-    var weightChartOptions,
-        weightParamsFilled,
+    var weightChartDataSource = ko.observableArray([]),
         exerciseTypes = ko.observableArray([]),
-        equipmentTypes = ko.observableArray([]),
         tabOptions,
         selectedTab = ko.observable(1),
         selectedExerciseType = ko.observable(""),
-        selectedEquipmentType = ko.observable(""),
-
-        isWeightDataLoaded = ko.observable(false);
-
-    weightChartOptions = {
-        commonSeriesSettings: {
-            argumentField: 'date'
-        },
-        series: [
-            { valueField: 'weight', name: 'Weight' },
-        ],
-        argumentAxis: {
-            grid: {
-                visible: true
-            },
-            tickInterval: 'day',
-            label: {
-                format: 'monthAndDay'
-            }
-        },
-        valueAxis: {
-            min: 0
-        },
-        tooltip: {
-            enabled: true
-        },
-        legend: {
-            verticalAlignment: 'bottom',
-            horizontalAlignment: 'center'
-        },
-        dataSource: ko.observableArray([])
-    };
+        isWeightDataLoaded = ko.observable(false);   
 
     function setTypes(workouts) {
-        var exercisesArray = [],
-            equipmentArray = [];
+        var exercisesArray = [];
         $.each(workouts, function() {
-            $.each(this.exerciseGroups, function() {
-                $.each(this.exercises, function() {
-                    var name = this.name,
-                        equipment = this.equipment;
-                    if (name && $.inArray(name, exercisesArray) < 0)
+            $.each(this.exercises, function() {
+                var name = this.name;
+                $.each(this.sets, function() {
+                    if(name && this.weight && $.inArray(name, exercisesArray) < 0) {
                         exercisesArray.push(name);
-                    if (equipment && $.inArray(equipment, equipmentArray) < 0)
-                        equipmentArray.push(equipment);
+                        return false;
+                    }
                 });
             });
         });
+
         exerciseTypes(exercisesArray);
-        equipmentTypes(equipmentArray);
+        selectedExerciseType(exercisesArray.length ? exercisesArray[0] : null);
+        weightDataLoaded(workouts);
     }
 
     function weightDataLoaded(workouts) {
@@ -65,25 +32,23 @@ DXWorkout.WeightGraphs = function(params) {
             weightGraphInfo = [ ];
 
         $.each(workouts, function (_, workout) {
-            return $.each(workout.exerciseGroups, function(_, exerciseGroup) {
-                return $.each(exerciseGroup.exercises, function (_, exercise) {
-                    if (exercise.name == selectedExerciseType() && exercise.equipment == selectedEquipmentType()) {
-                        var maxWeight = -1;
-                        $.each(exercise.sets, function () {
-                            if (this.weight > maxWeight)
-                                maxWeight = this.weight;
-                        });
-                        if (maxWeight > 0) {
-                            var date = new Date(workout.date);
-                            var key = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            return $.each(workout.exercises, function (_, exercise) {
+                if (exercise.name === selectedExerciseType()) {
+                    var maxWeight = -1;
+                    $.each(exercise.sets, function () {
+                        if (this.weight > maxWeight)
+                            maxWeight = this.weight;
+                    });
+                    if (maxWeight > 0) {
+                        var date = new Date(workout.startDate);
+                        var key = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
-                            if (weightGraphObj[key] > maxWeight)
-                                return;
+                        if (weightGraphObj[key] > maxWeight)
+                            return;
 
-                            weightGraphObj[key] = maxWeight;
-                        }
+                        weightGraphObj[key] = maxWeight;
                     }
-                });
+                }
             });
         });
 
@@ -95,19 +60,14 @@ DXWorkout.WeightGraphs = function(params) {
         });
 
         if (weightGraphInfo.length)
-                weightChartOptions.dataSource(weightGraphInfo);
+                weightChartDataSource(weightGraphInfo);
             else
-                weightChartOptions.dataSource([]);
+                weightChartDataSource([]);
         isWeightDataLoaded(true);
     }
 
-    weightParamsFilled = ko.computed(function() {
-        return selectedExerciseType() && selectedEquipmentType();
-    });
-
-    weightParamsFilled.subscribe(function(need) {
-        if (need)
-            weightDataLoaded(DXWorkout.workouts());
+    selectedExerciseType.subscribe(function() {
+        weightDataLoaded(DXWorkout.workouts());
     });
 
     tabOptions = {
@@ -123,14 +83,12 @@ DXWorkout.WeightGraphs = function(params) {
     };
 
     return {
-        weightChartOptions: weightChartOptions,
+        currentNavigationItemId: "Graphs",
+
+        weightChartDataSource: weightChartDataSource,
 
         exerciseTypes: exerciseTypes,
-        equipmentTypes: equipmentTypes,
         selectedExerciseType: selectedExerciseType,
-        selectedEquipmentType: selectedEquipmentType,
-        
-        weightParamsFilled: weightParamsFilled,
         isWeightDataLoaded: isWeightDataLoaded,
 
         tabOptions: tabOptions,
@@ -143,13 +101,10 @@ DXWorkout.WeightGraphs = function(params) {
         viewShown: function() {
             var workouts = DXWorkout.workouts();
             setTypes(workouts);
-            if (weightParamsFilled()) {
-                weightDataLoaded(workouts);
-            }
         },
 
         weightChartHasData: function() {
-            return weightChartOptions.dataSource().length;
+            return weightChartDataSource().length;
         }
     };
 };

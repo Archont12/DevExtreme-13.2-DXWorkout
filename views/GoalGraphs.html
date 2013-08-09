@@ -2,16 +2,16 @@
    
     <div data-options="dxContent : { targetPlaceholder: 'content' } " >
         <div id="tabs" data-bind="dxTabs: tabOptions"></div>        
-        <div class="content full-height">
+        <div class="full-height">
 
             <!-- ko if: isGoalsDataLoaded -->
                 <!-- ko if: goalsChartHasData() -->
                     <div class="graph-area">
-                         <div id="goalsChart" class="graph-container" data-bind="dxPieChart: goalsChartOptions"></div>
+                        <div id="goalsChart" data-bind="dxPieChart: goalsChartOptions"></div>
                     </div> 
                 <!-- /ko -->
                 <!-- ko if: !goalsChartHasData() -->
-                    <div class="graph-empty-comment">No logs have been added during the last month</div>
+                    <div class="graph-empty-comment">No logs have been added</div>
                 <!-- /ko -->
             <!-- /ko -->
   
