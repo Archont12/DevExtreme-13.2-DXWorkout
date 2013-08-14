@@ -1,11 +1,13 @@
-# DXWorkout demo
+# DXWorkout
 
-A sample application that demonstrates the power of the [PhoneJS mobile framework](http://phonejs.devexpress.com/) and [ChartJS data visualization widgets](http://chartjs.devexpress.com/). 
+DXWorkout is designed for bodybuilders who need a simple and straightforward tool to track daily workouts. Built to demonstrate the capabilities of the DevExpress [PhoneJS HTML 5 Mobile Framework](http://phonejs.devexpress.com/), DXWorkout supports multiple weight lifting set patterns, including supersets, compound sets and giant sets. 
 
-This mobile application is designed to become your assistant at the gym. It helps to track your daily workouts over time. In addition to logging trainings, you can also watch your progress on the charts.
+With a fully customizable exercise list and built-in charting, DXWorkout will help you gain control over your workouts and analyze your performance gains over time.
 
-DXWorkout is built with MVVM in mind. It uses HTML5 localStorage to store data, and the PhoneGap API for its splash screen and for persisting user data when a user leaves the application.
+Available in mobile app stores:
 
-Ready to be turned into a native application via packaging services, such as [PhoneGap Build] (https://build.phonegap.com/apps).
+* [Apple App Store](https://itunes.apple.com/ru/app/dxworkout/id681169422?mt=8)
+* [Google Play](https://play.google.com/store/apps/details?id=app.id_c0768bc10f7e4a4197c86c1084b6807a)
+* [Windows Phone Store](http://www.windowsphone.com/en-us/store/app/dxworkout/990c93ec-7fdb-49f9-8be0-3d6f03d213b1)
 
-Check DXWorkout [mobile application] (http://phonejs.devexpress.com/Demos/?url=DXWorkout&sm=3) in action.
+and online as a [mobile web application](http://phonejs.devexpress.com/Demos/?url=DXWorkout&sm=3). 
