@@ -62,8 +62,20 @@
     }
 
     function saveCurrentWorkout() {
-        if(wo.currentWorkout)
-            localStorage.setItem(CURRENT_KEY, JSON.stringify(wo.currentWorkout.toJS()));
+        if(!wo.currentWorkout)
+            return;
+
+        var workout = wo.currentWorkout.toJS(),
+            exercises = workout.exercises;  
+
+        if(!workout.goal || exercises.length === 0)
+            return;
+
+        if(!exercises[exercises.length - 1].name)
+            exercises.pop();
+
+        if(exercises.length)
+            localStorage.setItem(CURRENT_KEY, JSON.stringify(workout));
     }
 
     function getCurrentFromStorage() {

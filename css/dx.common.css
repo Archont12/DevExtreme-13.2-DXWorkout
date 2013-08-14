@@ -1,7 +1,7 @@
 /*! 
 * DevExpress PhoneJS
-* Version: 13.1.6-pre
-* Build date: Aug 7, 2013
+* Version: 13.1.6
+* Build date: Aug 13, 2013
 *
 * Copyright (c) 2012 - 2013 Developer Express Inc. ALL RIGHTS RESERVED
 * EULA: http://phonejs.devexpress.com/EULA
@@ -295,6 +295,12 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   -o-user-drag: none;
   user-drag: none;
 }
+.dx-scrollview-pull-down .dx-scrollview-pull-down-container
+{
+  display: inline-block;
+  width: 49%;
+  text-align: right;
+}
 .dx-scrollview-pull-down.dx-scrollview-pull-down-loading .dx-scrollview-pull-down-image
 {
   display: none;
@@ -408,6 +414,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 .dx-scrollview-scrollbottom .dx-scrollview-scrollbottom-indicator
 {
   display: inline-block;
+  margin-left: 0;
 }
 .dx-scrollview-scrollbottom.dx-scrollview-scrollbottom-end .dx-scrollview-scrollbottom-indicator
 {
@@ -430,10 +437,10 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 }
 .dx-scrollview-scrollbottom
 {
-  text-align: center;
   width: 100%;
   padding: 10px 0;
   overflow: hidden;
+  text-align: center;
 }
 .dx-checkbox
 {

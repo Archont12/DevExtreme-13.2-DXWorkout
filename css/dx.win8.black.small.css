@@ -1,7 +1,7 @@
 /*! 
 * DevExpress PhoneJS
-* Version: 13.1.6-pre
-* Build date: Aug 7, 2013
+* Version: 13.1.6
+* Build date: Aug 13, 2013
 *
 * Copyright (c) 2012 - 2013 Developer Express Inc. ALL RIGHTS RESERVED
 * EULA: http://phonejs.devexpress.com/EULA
@@ -1022,6 +1022,10 @@
   padding: 0 20%;
   background-color: #333;
   color: #fff;
+}
+.dx-theme-win8 .dx-popup .dx-overlay-content .dx-popup-title
+{
+  text-transform: uppercase;
 }
 .dx-theme-win8 .dx-dialog-root .dx-overlay-shader
 {
