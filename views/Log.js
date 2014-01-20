@@ -2,26 +2,10 @@
 
 DXWorkout.Log = function (params) {
     var log = ko.computed(function() {
-        var workouts = DXWorkout.workouts();
-        workouts.sort(function(i, j) {
-            return new Date(j.startDate) - new Date(i.startDate);
-        });
-
-        var grouped = {},
-            result = [];
-
-        $.each(workouts, function() {
-            var key = Globalize.format(new Date(this.startDate), "MMM yyyy");
-            if (!grouped[key])
-                grouped[key] = [];
-            grouped[key].push(this);
-        });
-
-        $.each(grouped, function(key, value) {
-            result.push({ key: key, items: value });
-        });
-
-        return result;
+        return DevExpress.data.query(DXWorkout.workouts())
+            .sortBy(function(item) { return new Date(item.startDate); }, "desc")
+            .groupBy(function(item) { return Globalize.format(new Date(item.startDate), "MMM yyyy"); })
+            .toArray();
     });
 
     function handleItemClick(e) {
@@ -30,6 +14,10 @@ DXWorkout.Log = function (params) {
 
     return {
         log: log,
-        handleItemClick: handleItemClick
+        handleItemClick: handleItemClick,
+
+        viewShown: function() {
+            $(".dx-active-view .dx-scrollable").data("dxScrollView").scrollTo(0);
+        }
     };
 };

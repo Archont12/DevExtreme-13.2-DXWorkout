@@ -18,7 +18,7 @@ DXWorkout.Exercise = function(params) {
 
     function cancelExercise() {
         commandsVisible(false);
-        wo.app.navigate("List/select/exercise", { direction: 'backward' });
+        wo.app.back();
     };
 
     function cancelWorkout() {
@@ -32,11 +32,16 @@ DXWorkout.Exercise = function(params) {
         title: title,
         workout: workout,
         exercise: exercise,
+        cancelVisible: !wo.hardwareBackButton && wo.app.canBack(),
         cancelCommands: cancelCommands,
         commandsVisible: commandsVisible,
 
         handleCancel: handleCancel,
         backButtonDown: handleCancel,
+
+        viewShown: function() {
+            $(".dx-active-view .dx-scrollable").data("dxScrollView").scrollTo(0);
+        },
 
         viewShowing: function(args) {
             var currentWorkout = wo.currentWorkout,
@@ -46,8 +51,6 @@ DXWorkout.Exercise = function(params) {
             workout(currentWorkout);
             exercise(currentExercise);
             title('#' + exerciseCount + ' ' + currentExercise.name());
-            if(args.viewInfo.renderResult)
-                args.viewInfo.renderResult.$markup.find(".dx-content > .dx-scrollable").data("dxScrollView").scrollTo(0);
         }
     };
 }

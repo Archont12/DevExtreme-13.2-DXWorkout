@@ -9,10 +9,13 @@ DXWorkout.Results = function(params) {
         hideNavigationButton: !id,
         workout: workout,
 
+        viewShown: function () {
+            $(".dx-active-view .dx-scrollable").data("dxScrollView").scrollTo(0);
+        },
+
         viewShowing: function(args) {
             workout(id ? wo.getWorkoutById(id) : wo.currentWorkout);
-            if(args.viewInfo.renderResult)
-                args.viewInfo.renderResult.$markup.find(".dx-content > .dx-scrollable").data("dxScrollView").scrollTo(0);
+            var renderResult = args.viewInfo.renderResult;
         }
     };
 }

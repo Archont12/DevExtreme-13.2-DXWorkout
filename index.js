@@ -1,42 +1,16 @@
 ﻿"use strict";
 
-window.DXWorkout = {};
+window.DXWorkout = window.DXWorkout || {};
 
 !function () {
     var wo = window.DXWorkout,
         app,
         currentBackAction,
         device = DevExpress.devices.current(),
-        iosVersion = DevExpress.devices.iosVersion(),
         APP_SETTINGS = {
             namespace: wo,
-            defaultLayout: "slideout",
-            navigation: [
-                {
-                    "id": "Home",
-                    "title": "Home",
-                    "action": "#Home",
-                    "icon": "home"
-                },
-                {
-                    "id": "Logs",
-                    "title": "Logs",
-                    "action": "#Log",
-                    "icon": "event"
-                },
-                {
-                    "id": "Graphs",
-                    "title": "Graphs",
-                    "action": "#GoalGraphs",
-                    "icon": "chart"
-                },
-                {
-                    "id": "Settings",
-                    "title": "Settings",
-                    "action": "#Settings",
-                    "icon": "card"
-                }
-            ]
+            navigationType: wo.config.navigationType,
+            navigation: wo.config.navigation
         };
 
     $.extend(wo, {
@@ -50,7 +24,7 @@ window.DXWorkout = {};
             weightUnit: "lbs"
         },
 
-        hardwareBackButton: (device.phone && device.platform === "win8") || device.platform === "android",
+        hardwareBackButton: (device.phone && device.platform === "win8") || device.platform === "android" || device.platform === "tizen",
         currentWorkout: null,
 
         formatTime: function(totalMinutes) {
@@ -122,9 +96,12 @@ window.DXWorkout = {};
             return;
         }
 
-        if(args.options.location === "navigation" && args.options.target !== "back" && isWorkoutMaster(args.currentUri) && !isWorkoutMaster(args.uri)) {
-            if(!confirm("Cancel workout in progress?")) 
+        if (args.options.location === "navigation" && args.options.target !== "back" && isWorkoutMaster(args.currentUri) && !isWorkoutMaster(args.uri)) {
+            if(!confirm("Cancel workout in progress?")) {
                 args.cancel = true;
+            } else {
+                wo.removeCurrentWorkout();
+            }
         }
     }
 
@@ -142,10 +119,12 @@ window.DXWorkout = {};
         } else {
             if(wo.app.canBack()) {
                 wo.app.back();
-            }
-            else {
+            } else {
                 if(confirm("Are you sure you want to exit?")) {
                     switch(device.platform) {
+                        case "tizen":
+                            tizen.application.getCurrentApplication().exit();
+                            break;
                         case "android":
                             navigator.app.exitApp();
                             break;
@@ -165,18 +144,13 @@ window.DXWorkout = {};
     }
 
     $(function() {
-        FastClick.attach(document.body);
+        // Uncomment the line below to disable platform-specific look and feel and to use the Generic theme for all devices
+        // DevExpress.devices.current({ platform: "generic" });
+
         app = wo.app = new DevExpress.framework.html.HtmlApplication(APP_SETTINGS);
         app.router.register(":view/:action/:item", { view: "Home", action: undefined, item: undefined });
         wo.app.viewShown.add(onViewShown);
         wo.app.navigationManager.navigating.add(onNavigate);
-
-        // enable iOS7 theme
-        if(device.platform === "ios" && iosVersion && iosVersion[0] === 7) {
-            $(".dx-viewport")
-                .removeClass("dx-theme-ios")
-                .addClass("dx-theme-ios7");
-        }
 
         wo.initUserData();
         startApp();
@@ -184,7 +158,14 @@ window.DXWorkout = {};
         setTimeout(function() {
             document.addEventListener("deviceready", onDeviceReady, false);
             window.onunload = wo.saveCurrentWorkout;
+
+            if(device.platform == "tizen") {
+                document.addEventListener("tizenhwkey", function(e) {
+                    if(e.keyName === "back")
+                        onBackButton();
+                });
+            }
         }, 1000);
     });
-
+    DevExpress.viz.core.currentTheme(DevExpress.devices.current().platform);
 }();

@@ -9,7 +9,21 @@
         keySettings = ko.observableArray(),
         emptyValue = "Enter new " + key + "...",
         isEdit = action === "edit",
-        canDelete;
+        canDelete,
+        deleteMode,
+        addButtonDisabled;
+
+    switch (DevExpress.devices.current().platform) {
+        case 'ios':
+            deleteMode = 'slideButton';
+            break; 
+        case 'win8':
+            deleteMode = 'hold';
+            break;
+        default:
+            deleteMode = 'swipe';
+    }
+
 
     titleBag = [
         isEdit ? "Edit" : "Select", " ",
@@ -23,12 +37,17 @@
     }
 
     function showToast(message) {
-        DevExpress.ui.notify({ message: message, displayTime: 5000, position: { of: '.dx-viewport .layout-content' } });
+        var device = DevExpress.devices.current();
+        var toastSettings = {
+            message: message,
+            displayTime: 5000
+        };
+
+        DevExpress.ui.notify(toastSettings);
     }
 
     function handleDeleteClick(e) {
-        var message = "\"" + e.model + "\" was deleted";
-        keySettings.splice(keySettings.indexOf(e.model), 1);
+        var message = "\"" + e.itemData + "\" was deleted";
         DXWorkout.saveSettings(key, keySettings());
 
         showToast(message);
@@ -66,7 +85,7 @@
                     break;
                 case "exercise":
                     workout.currentExercise().name(e.itemData);
-                    wo.app.navigate("Exercise/add", { direction: "forward" });
+                    wo.app.navigate("Exercise/add");
                     break;
             }
         }
@@ -83,8 +102,7 @@
                     break;
                 case "exercise":
                     workout.exercises.pop();
-                    var url = workout.currentExercise() ? "Exercise/add" : "List/select/goal";
-                    wo.app.navigate(url, { direction: 'backward' });
+                    wo.app.back();
                     break;
             }
         }
@@ -102,10 +120,16 @@
         return isEdit && keySettings().length > 1;
     });
 
+    addButtonDisabled = ko.computed(function() {
+        return newValue().length === 0;
+    });
+
     return {
         hideNavigationButton: !isEdit,
         isEdit: isEdit,
         canDelete: canDelete,
+        addButtonDisabled: addButtonDisabled,
+        deleteMode: deleteMode,
 
         keySettings: keySettings,
         title: title,
@@ -122,11 +146,10 @@
             keySettings(wo.settings[key]);
             searchQuery("");
             newValue("");
-            if(args.viewInfo.renderResult)
-                args.viewInfo.renderResult.$markup.find(".dx-content > .dx-scrollable").data("dxScrollView").scrollTo(0);    
         },
 
-        viewShown: function() {
+        viewShown: function () {
+            $(".dx-active-view .dx-scrollable").data("dxScrollView").scrollTo(0);
             if(!isEdit && key === "exercise") 
                 wo.currentWorkout.clearCurrentExercise();
         },

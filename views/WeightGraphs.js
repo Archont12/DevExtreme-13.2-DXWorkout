@@ -4,6 +4,7 @@ DXWorkout.WeightGraphs = function(params) {
     var weightChartDataSource = ko.observableArray([]),
         exerciseTypes = ko.observableArray([]),
         tabOptions,
+        chartOptions,
         selectedTab = ko.observable(1),
         selectedExerciseType = ko.observable(""),
         isWeightDataLoaded = ko.observable(false);   
@@ -82,10 +83,45 @@ DXWorkout.WeightGraphs = function(params) {
         selectedIndex: selectedTab
     };
 
+    chartOptions = {
+        commonSeriesSettings: {
+            argumentField: 'date'
+        },
+        series: [
+            { valueField: 'weight', name: 'Weight' },
+        ],
+        argumentAxis: {
+            grid: {
+                visible: true
+            },
+            tickInterval: 'day',
+            label: {
+                format: 'monthAndDay',
+                overlappingBehavior: {
+                    mode: 'enlargeTickInterval'
+                }
+            }
+        },
+        valueAxis: {
+            min: 0
+        },
+        tooltip: {
+            enabled: true,
+            argumentFormat: 'shortDate',
+            customizeText: function() {
+                return this.seriesName + ': ' + this.valueText + '<br/>' + this.argumentText;
+            }
+        },
+        legend: {
+            verticalAlignment: 'bottom',
+            horizontalAlignment: 'center'
+        },
+        dataSource: weightChartDataSource
+    };
+
     return {
         currentNavigationItemId: "Graphs",
-
-        weightChartDataSource: weightChartDataSource,
+        chartOptions: chartOptions,
 
         exerciseTypes: exerciseTypes,
         selectedExerciseType: selectedExerciseType,

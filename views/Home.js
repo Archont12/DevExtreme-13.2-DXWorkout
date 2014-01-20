@@ -26,7 +26,10 @@ DXWorkout.Home = function(params) {
             },
             argumentAxis: {
                 label: {
-                    format: 'monthAndDay'
+                    format: 'monthAndDay',
+                    overlappingBehavior: {
+                        mode: 'enlargeTickInterval'
+                    }
                 },
                 grid: {
                     visible: true
@@ -61,7 +64,7 @@ DXWorkout.Home = function(params) {
             if(startDate > lastMonthDate)
                 return {
                     startDate: startDate,
-                    duration: Math.floor((endDate - startDate)/(60*1000))
+                    duration: Math.floor((endDate - startDate) / (60*1000))
                 }
         });
     }  
@@ -108,7 +111,7 @@ DXWorkout.Home = function(params) {
             
             var lastDate = new Date(workouts[0].startDate);
             lastWorkoutDate(Globalize.format(lastDate, 'MMM d, yyyy'));
-            daysFromLastWorkout(new Date(currentDate - lastDate).getDate() - 1);
+            daysFromLastWorkout(Math.floor((currentDate - lastDate) / (24*60*60*1000)));
         }
     };
 };

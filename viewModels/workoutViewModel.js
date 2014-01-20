@@ -52,7 +52,10 @@ DXWorkout.createWorkoutViewModel = function() {
     }
 
     function handleContinue() {
-        wo.app.navigate("Exercise/add", { direction: 'backward' });
+        if(wo.app.canBack())
+            wo.app.back();
+        else
+            wo.app.navigate("Exercise", { direction: 'backward', root: true });
     }
 
     function handleFinish() {
@@ -69,7 +72,7 @@ DXWorkout.createWorkoutViewModel = function() {
         newExercise.exerciseNumber = exercises().length + 1;
         exercises.push(newExercise);
 
-        wo.app.navigate("List/select/exercise", { direction: 'forward' });
+        wo.app.navigate("List/select/exercise");
     }
 
     function handleAddSet() {
@@ -129,7 +132,7 @@ DXWorkout.createWorkoutViewModel = function() {
 
     function cancelCurrentWorkout() {
         wo.removeCurrentWorkout();
-        wo.app.navigate("Home");
+        wo.app.navigate("Home", { direction: 'backward', root: true });
     }
 
     function formatCaption() {

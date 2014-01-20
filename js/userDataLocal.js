@@ -66,7 +66,7 @@
             return;
 
         var workout = wo.currentWorkout.toJS(),
-            exercises = workout.exercises;  
+            exercises = workout.exercises;   
 
         if(!workout.goal || exercises.length === 0)
             return;
@@ -140,7 +140,9 @@
     function clearUserData() {
         var localStorageKeys = [
             WORKOUTS_KEY,
+            CURRENT_KEY,
             DATA_VERSION,
+            "dxworkout-settings-goal",
             "dxworkout-settings-exercise",
             "dxworkout-settings-lengthUnit",
             "dxworkout-settings-weightUnit"

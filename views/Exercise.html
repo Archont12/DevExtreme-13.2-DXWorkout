@@ -1,5 +1,5 @@
-﻿<div data-options="dxView : { name: 'Exercise' } " >
-    <div data-bind="dxCommand: { title: 'Cancel', location: 'back', id: 'back', action: handleCancel, visible: !DXWorkout.hardwareBackButton }"></div>
+<div data-options="dxView : { name: 'Exercise' } " >
+    <div data-bind="dxCommand: { title: 'Cancel', id: 'back', action: handleCancel, visible: cancelVisible }"></div>
 
     <div data-options="dxContent : { targetPlaceholder: 'content' } " >
         <div data-bind="dxScrollView: {}">
@@ -7,9 +7,9 @@
                 <div>
                     <div class="dx-field-label">Set <span data-bind="text: ($index() + 1)"></span></div>
                     <div class="dx-field-value">
-                        <div data-bind="dxNumberBox: { value: reps, min: 1, placeholder: 'Reps' } "></div>
+                        <div data-bind="dxNumberBox: { value: reps, min: 1, placeholder: 'Reps', valueUpdateEvent: 'keyup' } "></div>
                         <span>&times;</span>
-                        <div data-bind="dxNumberBox: { value: weight, min: 0, placeholder: 'Weight' } "></div>
+                        <div data-bind="dxNumberBox: { value: weight, min: 0, placeholder: 'Weight', valueUpdateEvent: 'keyup' } "></div>
                         <span data-bind="text: weightUnit"></span>
 
                         <!-- ko if: canDelete() -->

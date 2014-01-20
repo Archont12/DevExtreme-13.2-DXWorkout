@@ -10,22 +10,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
     <!-- Framework -->
-    <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
-    <script type="text/javascript" src="js/knockout-2.2.1.js"></script>
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+    <![endif]-->
+    <!--[if gte IE 9]><!-->
+    <script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
+    <!--<![endif]-->
+    <script type="text/javascript" src="js/knockout-3.0.0.js"></script>
     <script type="text/javascript" src="js/globalize.min.js"></script>
     <script type="text/javascript" src="cordova.js"></script>
 
     <script type="text/javascript" src="js/dx.all.js"></script>
-    <script type="text/javascript" src="js/fastclick.js"></script>
     
     <link rel="stylesheet" type="text/css" href="css/dx.common.css" />
     <link rel="stylesheet" type="text/css" href="css/dx.ios.default.css" />
     <link rel="stylesheet" type="text/css" href="css/dx.android.holo-dark.css" />
-    <link rel="stylesheet" type="text/css" href="css/dx.win8.black.small.css" />
+    <link rel="stylesheet" type="text/css" href="css/dx.win8.black.css" />
+    <link rel="stylesheet" type="text/css" href="css/dx.tizen.white.css" />
+    <link rel="stylesheet" type="text/css" href="css/dx.generic.light.css" />
 
     <!-- App -->
     <link rel="stylesheet" type="text/css" href="index.css" />
-    <script type="text/javascript" src="index.js"></script> 
+    <script type="text/javascript" src="app.config.js"></script> 
+    <script type="text/javascript" src="index.js"></script>
 
     <script type="text/javascript" src="js/userDataLocal.js"></script>
     <script type="text/javascript" src="js/sampleData.js"></script>
@@ -65,7 +72,7 @@
     <link rel="dx-template" type="text/html" href="views/List.html"/>
 </head>
 <body>
-    <div class="dx-viewport"></div>
+    <div id="viewport" class="dx-viewport"></div>
 </body>
 </html>
 

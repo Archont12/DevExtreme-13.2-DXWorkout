@@ -1,7 +1,6 @@
 ﻿<div data-options="dxView : { name: 'Results', title: 'Workout Results' } " >
     <div data-options="dxContent : { targetPlaceholder: 'content' } " >
-        <div data-bind="dxScrollView: {}">
-            <!--ko with: workout -->
+        <div data-bind="dxScrollView: {}, with: workout">
             <div class="content">
                 <div>
                     <div class="dx-field-label">Workout date</div>
@@ -55,7 +54,6 @@
                 <div data-bind="dxButton: { text: 'Finish workout', clickAction: handleFinish }"></div>
                 <!-- /ko -->
             </div>
-            <!-- /ko -->
         </div>
     </div>
 </div>
