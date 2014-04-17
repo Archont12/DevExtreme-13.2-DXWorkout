@@ -26,6 +26,11 @@ DXWorkout.Exercise = function(params) {
         wo.currentWorkout.cancelCurrentWorkout();
     };
 
+    function handleAddSet() {
+        workout().handleAddSet();
+        $(".dx-active-view .dx-scrollview").data("dxScrollView").update();
+    };
+
     return {
         hideNavigationButton: true,
 
@@ -38,6 +43,7 @@ DXWorkout.Exercise = function(params) {
 
         handleCancel: handleCancel,
         backButtonDown: handleCancel,
+        handleAddSet: handleAddSet,
 
         viewShown: function() {
             $(".dx-active-view .dx-scrollable").data("dxScrollView").scrollTo(0);

@@ -64,7 +64,7 @@ DXWorkout.Home = function(params) {
             if(startDate > lastMonthDate)
                 return {
                     startDate: startDate,
-                    duration: Math.floor((endDate - startDate) / (60*1000))
+                    duration: Math.ceil((endDate - startDate) / (60*1000))
                 }
         });
     }  

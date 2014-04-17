@@ -7,6 +7,7 @@ window.DXWorkout = window.DXWorkout || {};
         app,
         currentBackAction,
         device = DevExpress.devices.current(),
+        realDevice = DevExpress.devices.real,
         APP_SETTINGS = {
             namespace: wo,
             navigationType: wo.config.navigationType,
@@ -114,25 +115,21 @@ window.DXWorkout = window.DXWorkout || {};
     }
 
     function onBackButton() {
-        if(currentBackAction) {
-            currentBackAction();
-        } else {
-            if(wo.app.canBack()) {
-                wo.app.back();
-            } else {
-                if(confirm("Are you sure you want to exit?")) {
-                    switch(device.platform) {
-                        case "tizen":
-                            tizen.application.getCurrentApplication().exit();
-                            break;
-                        case "android":
-                            navigator.app.exitApp();
-                            break;
-                        case "win8":
-                            window.external.Notify("DevExpress.ExitApp");
-                            break;
-                    }
-                }
+        DevExpress.hardwareBackButton.fire();
+    }
+
+    function exitApp() {
+        if(confirm("Are you sure you want to exit?")) {
+            switch(realDevice.platform) {
+                case "tizen":
+                    tizen.application.getCurrentApplication().exit();
+                    break;
+                case "android":
+                    navigator.app.exitApp();
+                    break;
+                case "win8":
+                    window.external.Notify("DevExpress.ExitApp");
+                    break;
             }
         }
     }
@@ -143,6 +140,17 @@ window.DXWorkout = window.DXWorkout || {};
         navigator.splashscreen.hide();
     }
 
+    function onNavigatingBack(e) {
+        if(!e.isHardwareButton) return;
+        if(currentBackAction) {
+            currentBackAction();
+            e.cancel = true;
+        }
+        else if(!wo.app.canBack()) {
+            exitApp();
+        }
+    }
+
     $(function() {
         // Uncomment the line below to disable platform-specific look and feel and to use the Generic theme for all devices
         // DevExpress.devices.current({ platform: "generic" });
@@ -150,7 +158,8 @@ window.DXWorkout = window.DXWorkout || {};
         app = wo.app = new DevExpress.framework.html.HtmlApplication(APP_SETTINGS);
         app.router.register(":view/:action/:item", { view: "Home", action: undefined, item: undefined });
         wo.app.viewShown.add(onViewShown);
-        wo.app.navigationManager.navigating.add(onNavigate);
+        wo.app.navigating.add(onNavigate);
+        wo.app.navigatingBack.add(onNavigatingBack);
 
         wo.initUserData();
         startApp();
@@ -166,6 +175,6 @@ window.DXWorkout = window.DXWorkout || {};
                 });
             }
         }, 1000);
+        DevExpress.viz.core.currentTheme(DevExpress.devices.current().platform, undefined, device.version[0]);
     });
-    DevExpress.viz.core.currentTheme(DevExpress.devices.current().platform);
 }();

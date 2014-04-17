@@ -69,6 +69,10 @@
     top: 0px;
 }
 
+.dx-theme-win8 .dx-toolbar .dx-toolbar-center .dx-toolbar-label div {
+    line-height: 60px;
+}
+
 .dx-theme-tizen .dx-list-item .dx-button .dx-button-content {
     padding: 4px 8px;
 }
@@ -308,6 +312,10 @@ div.even {
     width: 100%;
 }
 
+.dx-theme-android .graph-area .with-selects {
+    bottom: 92px;
+}
+
 .dx-theme-generic .graph-area .with-selects {
     bottom: 95px;
 }
@@ -332,17 +340,13 @@ div.even {
 
 /* List view */
 
-.search-wrapper .dx-textbox {
-    padding: 4px;
-}
-
 .action-list .new-item {
     padding: 4px;
     position: relative;
 }
 
 .action-list .new-item .dx-editbox {
-    margin-right: 40px;
+    margin-right: 46px;
 }
 
 .action-list .new-item .dx-button {
@@ -351,8 +355,15 @@ div.even {
     top: 5px;
 }
 
+
+
 .dx-theme-generic .search-wrapper {
     padding-left: 13px;
+}
+
+.dx-theme-generic .action-list .new-item .dx-button {
+	padding-top: 0;
+	padding-bottom: 0;
 }
 
 #viewport .action-list .dx-list {
@@ -363,12 +374,8 @@ div.even {
     height: auto;
 }
 
-#viewport.dx-theme-ios:not(.dx-version-major-7) .action-list .dx-list {
-    top: 40px;
-}
-
-#viewport.dx-theme-ios.dx-version-major-7 .action-list .dx-list { 
-    top: 44px;
+#viewport.dx-theme-ios .action-list .dx-list {
+    top: 42px;
 }
 
 .dx-theme-win8 .action-list .new-item .dx-editbox {
@@ -398,6 +405,10 @@ div.even {
 
 .dx-theme-generic .action-list .new-item {
     padding-left: 17px;
+}
+
+.dx-theme-ios .search-wrapper .dx-searchbox {
+	margin-top: 7px;
 }
 
 /* setting list feedback */

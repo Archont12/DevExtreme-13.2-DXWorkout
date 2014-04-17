@@ -20,7 +20,7 @@
             </div>
 
             <div class="actions" data-bind="with: workout">
-                <div data-bind="dxButton: { text: 'Add set', clickAction: handleAddSet }"></div>
+                <div data-bind="dxButton: { text: 'Add set', clickAction: $root.handleAddSet }"></div>
                 <div data-bind="dxButton: { text: 'Next exercise', clickAction: handleAddExercise }"></div>
                 <div data-bind="dxButton: { text: 'Show results', clickAction: handleShowResults }"></div>
             </div>

@@ -45,10 +45,14 @@ DXWorkout.createWorkoutViewModel = function() {
     }
 
     function handleDelete() {
-        var currentId = id();
-        wo.removeCurrentWorkout();
-        wo.deleteWorkout(currentId);
-        wo.app.navigate("Log", { direction: 'forward', root: true });
+        DevExpress.ui.dialog.confirm("Are you sure you want to delete this workout?", "Confirm deletion").done(function (result) {
+            if (!result)
+                return;
+            var currentId = id();
+            wo.removeCurrentWorkout();
+            wo.deleteWorkout(currentId);
+            wo.app.navigate("Log", { direction: 'forward', root: true });
+        });
     }
 
     function handleContinue() {
